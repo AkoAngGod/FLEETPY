@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Billing Summary
+{% endblock %}
+
+{% block content %}
+<center>
+    <div id="billing-container" style="width: 90%;">
+        <h2>BILLING (TIMEIN/TIMEOUT)</h2>
+
+        <div class="form-container" style="display: flex; justify-content: space-between;">
+            <!-- Clock-In Form -->
+            <div class="form-column" id="clock-in-column" style="width: 48%;">
+                <h3>Time In</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="clock_in" value="clock_in">
+                    <div class="form-group">
+                        <label for="profile_id_clock_in">Select Driver:</label>
+                        <select id="profile_id_clock_in" name="profile_id" class="form-control" required>
+                            {% for profile in profiles %}
+                            <option value="{{ profile.id }}" {% if profile.id in clocked_in_profiles %}disabled{% endif %}>
+                                {{ profile.firstname }} {{ profile.lastname }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taxi_id_clock_in">Select Taxi:</label>
+                        <select id="taxi_id_clock_in" name="taxi_id" class="form-control" required>
+                            {% for taxi in taxis %}
+                            <option value="{{ taxi.id }}">{{ taxi.plate_number }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" {% if profile.id in clocked_in_profiles %}disabled{% endif %}>Time In</button>
+                </form>
+            </div>
+
+            <!-- Clock-Out Form -->
+            <div class="form-column" id="clock-out-column" style="width: 48%;">
+                <h3>Time Out</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="clock_out" value="clock_out">
+                    <div class="form-group">
+                        <label for="profile_id_clock_out">Select Driver:</label>
+                        <select id="profile_id_clock_out" name="profile_id" class="form-control" required>
+                            {% for profile in profiles %}
+                            <option value="{{ profile.id }}">{{ profile.firstname }} {{ profile.lastname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_amount">Payment Amount (Pesos):</label>
+                        <input type="number" id="payment_amount" name="payment_amount" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg">Time Out</button>
+                </form>
+            </div>
+        </div>
+        <h3>Pending Bills</h3>
+        <table class="data-table" style="width: 100%; margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th>Driver</th>
+                    <th>License Number</th>
+                    <th>Vehicle</th>
+                    <th>Time In</th>
+                    <th>Rental Days</th>
+                    <th>Payment Amount (Pesos)</th>
+                    <th>Total Rent (Pesos)</th>
+                    <th>Balance (Pesos)</th>
+                    <th>Transaction Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for driver in drivers %}
+                <tr>
+                    <td>{{ driver.profile.firstname }} {{ driver.profile.lastname }}</td>
+                    <td>{{ driver.license_number }}</td>
+                    <td>{{ driver.vehicle }}</td>
+                    <td>{{ driver.time_in }}</td>
+                    <td>{{ driver.rental_days }}</td>
+                    <td>{{ driver.payment_amount }}</td>
+                    <td>{{ driver.total_rent }}</td>
+                    <td>{{ driver.balance }}</td>
+                    <td>{{ driver.transaction_number }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3>Transaction History</h3>
+        <table class="data-table" style="width: 100%; margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th>Driver</th>
+                    <th>Taxi</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Rental Days</th>
+                    <th>Daily Rate (Pesos)</th>
+                    <th>Total Rent (Pesos)</th>
+                    <th>Payment Amount (Pesos)</th>
+                    <th>Balance (Pesos)</th>
+                    <th>Transaction Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipt in receipts %}
+                <tr class="clickable-row" data-receipt-id="{{ receipt.id }}">
+                    <td>{{ receipt.profile }}</td>
+                    <td>{{ receipt.vehicle }}</td>
+                    <td>{{ receipt.time_in }}</td>
+                    <td>{{ receipt.time_out }}</td>
+                    <td>{{ receipt.rental_days }}</td>
+                    <td>1500</td>
+                    <td>{{ receipt.total_rent }}</td>
+                    <td>{{ receipt.payment_amount }}</td>
+                    <td>{{ receipt.balance }}</td>
+                    <td>{{ receipt.transaction_number }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for receipt -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeReceiptModal()">&times;</span>
+            <div id="receiptContainer"></div>
+        </div>
+    </div>
+</center>
+{% endblock %}

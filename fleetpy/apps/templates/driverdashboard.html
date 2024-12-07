@@ -1,0 +1,29 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+DASHBOARD
+{% endblock %}
+
+{% block content %}
+    <h2>DRIVERS INFORMATION</h2>
+    <table>
+        <tr>
+            <th>FULLNAME</th>
+            <th>BALANCE</th>
+            <th>ROLE</th>
+            <th>STATUS</th>
+        </tr>
+        {% for profile in profiles %}
+        <tr>
+            <td>{{profile.lastname}}, {{profile.firstname}} {{profile.middlename}}</td>
+            <td>${{profile.balance}}</td>
+            <td>{{profile.role}}</td>
+            <td>{{profile.status}}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No Available Information</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

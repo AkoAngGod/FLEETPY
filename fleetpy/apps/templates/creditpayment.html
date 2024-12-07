@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Credit Payment
+{% endblock %}
+
+{% block content %}
+<center>
+<div class="payment-container">
+    <h2>CREDIT PAYMENT</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="profile_id">Select Driver:</label>
+            <select id="profile_id" name="profile_id" class="form-control" required>
+                {% for profile in profiles %}
+                    <option value="{{ profile.id }}">{{ profile.firstname }} {{ profile.lastname }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="amount">Payment Amount (Pesos):</label>
+            <input type="number" id="amount" name="amount" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary"> PAY CREDIT </button>
+    </form>
+</div>
+    <h3>Transaction History</h3>
+        <table class="data-table" style="width: 100%; margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th>Driver</th>
+                    <th>Taxi</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Rental Days</th>
+                    <th>Daily Rate (Pesos)</th>
+                    <th>Total Rent (Pesos)</th>
+                    <th>Payment Amount (Pesos)</th>
+                    <th>Balance (Pesos)</th>
+                    <th>Transaction Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipt in receipts %}
+                <tr class="clickable-row" data-receipt-id="{{ receipt.id }}">
+                    <td>{{ receipt.profile }}</td>
+                    <td>{{ receipt.vehicle }}</td>
+                    <td>{{ receipt.time_in }}</td>
+                    <td>{{ receipt.time_out }}</td>
+                    <td>{{ receipt.rental_days }}</td>
+                    <td>1500</td>
+                    <td>{{ receipt.total_rent }}</td>
+                    <td>{{ receipt.payment_amount }}</td>
+                    <td>{{ receipt.balance }}</td>
+                    <td>{{ receipt.transaction_number }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+<div id="receiptModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeReceiptModal()">&times;</span>
+        <div id="receiptContainer"></div>
+    </div>
+</div>
+</center>
+{% endblock %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .payment-container {
+        width: 50%;
+        max-width: 500px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .btn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .btn:hover {
+        background-color: #0056b3;
+    }
+</style>

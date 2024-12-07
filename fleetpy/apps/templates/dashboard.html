@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block title %}
+DASHBOARD
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="profile-panel">
+            <div class="profile-card">
+                <div class="profile-photo-name">
+                    {% if current_user_profile.photo %}
+                        <img src="{{ current_user_profile.photo.url }}" alt="Profile Photo" class="profile-photo">
+                    {% else %}
+                        <p>No Photo</p>
+                    {% endif %}
+                    <div class="profile-name">
+                        <h3>{{ current_user_profile.firstname }} {{ current_user_profile.lastname }}</h3>
+                        <p>Role: {{ current_user_profile.role }}</p>
+                        <p>Status: {{ current_user_profile.status }}</p>
+                        <p>Balance: ${{ current_user_profile.balance }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="drivers-info">
+            <h2>DRIVERS INFORMATION</h2>
+            <table>
+                <tr>
+                    <th>FULLNAME</th>
+                    <th>BALANCE</th>
+                    <th>ROLE</th>
+                </tr>
+                {% for profile in profiles %}
+                <tr>
+                    <td>{{ profile.lastname }}, {{ profile.firstname }} {{ profile.middlename }}</td>
+                    <td>${{ profile.balance }}</td>
+                    <td>{{ profile.role }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No Available Information</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+<style>
+    .profile-panel {
+        display: flex;
+        justify-content: flex-start;  /* Align items to the left */
+        margin-bottom: 20px;
+    }
+    .profile-card {
+        width: 100%;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    .profile-photo-name {
+        display: flex;
+        align-items: center;
+    }
+    .profile-photo {
+        border-radius: 50%;
+        margin-right: 20px;
+        width: 50px;  /* Adjusted width */
+        height: 50px;  /* Adjusted height */
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    
+</style>
